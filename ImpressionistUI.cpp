@@ -280,6 +280,31 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+//-----------------------------------------------------------
+// Updates the brush thickness to use from the value of the size
+// slider
+// Called by the UI when the thickness slider is moved
+//-----------------------------------------------------------
+void ImpressionistUI::cb_thicknessSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nThickness = int(((Fl_Slider *)o)->value());
+}
+
+//-----------------------------------------------------------
+// Updates the brush angle to use from the value of the angle
+// slider
+// Called by the UI when the angle slider is moved
+//-----------------------------------------------------------
+void ImpressionistUI::cb_angleSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nAngle = int(((Fl_Slider *)o)->value());
+}
+
+
+
+
+
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -337,6 +362,44 @@ void ImpressionistUI::setSize( int size )
 
 	if (size<=40) 
 		m_BrushSizeSlider->value(m_nSize);
+}
+
+//------------------------------------------------
+// Return the thickness
+//------------------------------------------------
+int ImpressionistUI::getThickness()
+{
+	return m_nThickness;
+}
+
+//-------------------------------------------------
+// Set the thickness
+//-------------------------------------------------
+void ImpressionistUI::setThickness(int thickness)
+{
+	m_nThickness = thickness;
+
+	//if (thickness <= 40)
+		//m_BrushThicknessSlider->value(m_nThickness);
+}
+
+//------------------------------------------------
+// Return the brush size
+//------------------------------------------------
+int ImpressionistUI::getAngle()
+{
+	return m_nAngle;
+}
+
+//-------------------------------------------------
+// Set the brush size
+//-------------------------------------------------
+void ImpressionistUI::setAngle(int angle)
+{
+	m_nAngle = angle;
+
+	//if (m_nAngle <= 40)
+		//m_BrushAngleSlider->value(m_nAngle);
 }
 
 // Main menu definition
@@ -403,6 +466,12 @@ ImpressionistUI::ImpressionistUI() {
 
 	m_nSize = 10;
 
+	m_nThickness = 5;
+
+	m_nAngle = 0;
+
+
+
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
 		// Add a brush type choice to the dialog
@@ -428,6 +497,32 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->value(m_nSize);
 		m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
 		m_BrushSizeSlider->callback(cb_sizeSlides);
+
+		// Add brush thickness slider to the dialog 
+		m_BrushThicknessSlider = new Fl_Value_Slider(10, 105, 300, 20, "Thickness");
+		m_BrushThicknessSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_BrushThicknessSlider->type(FL_HOR_NICE_SLIDER);
+		m_BrushThicknessSlider->labelfont(FL_COURIER);
+		m_BrushThicknessSlider->labelsize(12);
+		m_BrushThicknessSlider->minimum(1);
+		m_BrushThicknessSlider->maximum(40);
+		m_BrushThicknessSlider->step(1);
+		m_BrushThicknessSlider->value(m_nThickness);
+		m_BrushThicknessSlider->align(FL_ALIGN_RIGHT);
+		m_BrushThicknessSlider->callback(cb_thicknessSlides);
+
+		// Add brush angle slider to the dialog 
+		m_BrushAngleSlider = new Fl_Value_Slider(10, 130, 300, 20, "Angle");
+		m_BrushAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_BrushAngleSlider->type(FL_HOR_NICE_SLIDER);
+		m_BrushAngleSlider->labelfont(FL_COURIER);
+		m_BrushAngleSlider->labelsize(12);
+		m_BrushAngleSlider->minimum(0);
+		m_BrushAngleSlider->maximum(360);
+		m_BrushAngleSlider->step(1);
+		m_BrushAngleSlider->value(m_nAngle);
+		m_BrushAngleSlider->align(FL_ALIGN_RIGHT);
+		m_BrushAngleSlider->callback(cb_angleSlides);
 
     m_brushDialog->end();	
 

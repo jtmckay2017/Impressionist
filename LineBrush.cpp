@@ -8,6 +8,7 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "linebrush.h"
+#include <math.h>
 
 extern float frand();
 
@@ -41,6 +42,12 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 
 	int size = pDoc->getSize();
+	int thickness = pDoc->getThickness();
+	int angle = pDoc->getAngle();
+	double angleRadians = (M_PI / 180.0) * angle;
+
+	//Set line width
+	glLineWidth(thickness);
 
 	//--------------------
 	//Begin drawing lines
@@ -49,12 +56,12 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		SetColor(source);
 
 		glVertex2d(target.x, target.y);
-		glVertex2d(target.x+size, target.y+size); //Affected by size slider
+		glVertex2d(target.x+cos(angleRadians)*size, target.y+sin(angleRadians)*size); //Affected by size slider
 	glEnd();
 }
 
 void LineBrush::BrushEnd(const Point source, const Point target)
 {
-	printf("stopped line brush\n");
+	printf("Running Line brush");
 }
 

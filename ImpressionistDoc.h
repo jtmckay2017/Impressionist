@@ -27,6 +27,10 @@ public:
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	int		getSize();						// get the UI size
 	void	setSize(int size);				// set the UI size
+	int		getThickness();					// get the UI thickness
+	void	setThickness(int size);			// set the UI thickness
+	int		getAngle();						// get the UI angle
+	void	setAngle(int size);				// set the UI angle
 	char*	getImageName();					// get the current image name
 	
 
