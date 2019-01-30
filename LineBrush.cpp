@@ -25,7 +25,7 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 
 
 
-	glLineWidth((float)size); //add slider for line width
+	//glLineWidth((float)size); //add slider for line width
 
 	BrushMove(source, target);
 }
