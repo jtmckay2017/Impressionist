@@ -36,7 +36,7 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 	if (pDoc == NULL) {
-		printf("LineBrush::BrushMove  document is NULL\n");
+		printf("CircleBrush::BrushMove  document is NULL\n");
 		return;
 	}
 

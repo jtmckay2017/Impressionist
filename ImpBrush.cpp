@@ -52,3 +52,14 @@ void ImpBrush::SetColor (const Point source)
 	glColor3ubv( color );
 
 }
+
+//------------------------------------------------
+// Set the color to paint with to the color at 
+// source x and y, which the coord at the original
+// window to sample the color from
+//------------------------------------------------
+void ImpBrush::SetColor(int x, int y)
+{
+	Point source = Point(x, y);
+	SetColor(source);
+}

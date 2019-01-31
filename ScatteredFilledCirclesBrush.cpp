@@ -36,7 +36,7 @@ void ScatteredFilledCirclesBrush::BrushMove(const Point source, const Point targ
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 	if (pDoc == NULL) {
-		printf("PointBrush::BrushMove  document is NULL\n");
+		printf("ScatteredFilledCirclesBrush::BrushMove  document is NULL\n");
 		return;
 	}
 

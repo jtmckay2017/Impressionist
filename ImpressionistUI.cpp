@@ -499,7 +499,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->callback(cb_sizeSlides);
 
 		// Add brush thickness slider to the dialog 
-		m_BrushThicknessSlider = new Fl_Value_Slider(10, 105, 300, 20, "Thickness");
+		m_BrushThicknessSlider = new Fl_Value_Slider(10, 105, 300, 20, "Line Thickness");
 		m_BrushThicknessSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushThicknessSlider->type(FL_HOR_NICE_SLIDER);
 		m_BrushThicknessSlider->labelfont(FL_COURIER);
@@ -512,7 +512,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushThicknessSlider->callback(cb_thicknessSlides);
 
 		// Add brush angle slider to the dialog 
-		m_BrushAngleSlider = new Fl_Value_Slider(10, 130, 300, 20, "Angle");
+		m_BrushAngleSlider = new Fl_Value_Slider(10, 130, 300, 20, "Line Angle");
 		m_BrushAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushAngleSlider->type(FL_HOR_NICE_SLIDER);
 		m_BrushAngleSlider->labelfont(FL_COURIER);
