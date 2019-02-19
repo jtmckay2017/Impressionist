@@ -38,19 +38,37 @@ char* ImpBrush::BrushName(void)
 //----------------------------------------------------
 // Set the color to paint with to the color at source,
 // which is the coord at the original window to sample 
-// the color from
+// the color from.
 //----------------------------------------------------
-void ImpBrush::SetColor (const Point source)
+void ImpBrush::SetColor(const Point source)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 
 
 	GLubyte color[3];
 
+	memcpy(color, pDoc->GetOriginalPixel(source), 3);
+
+	glColor3ubv(color);
+
+}
+
+//----------------------------------------------------
+// Set the color to paint with to the color at source,
+// which is the coord at the original window to sample 
+// the color from. Also set alpha
+//----------------------------------------------------
+void ImpBrush::SetColor (const Point source, float alpha)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+
+	GLubyte alphaUbyte = static_cast<GLubyte>(alpha * 255.f);  //convert float to ubyte
+
+	GLubyte color[3];
+
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
  
-	glColor3ubv( color );
-
+	glColor4ub( color[0], color[1], color[2], alphaUbyte );
 }
 
 //------------------------------------------------

@@ -23,7 +23,9 @@ void ScatteredPointsBrush::BrushBegin(const Point source, const Point target)
 
 	int size = pDoc->getSize();
 
-
+	//Enable blending for setting the alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glPointSize((float)1);
 
@@ -42,6 +44,9 @@ void ScatteredPointsBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
+	float alpha = pDoc->getAlpha();
+
+
 	for (int i = 0; i < radius; i++)
 	{
 		glBegin(GL_POINTS);
@@ -50,13 +55,15 @@ void ScatteredPointsBrush::BrushMove(const Point source, const Point target)
 		int randX = (rand() % radius) - (radius / 2);
 		int randY = (rand() % radius) - (radius / 2);
 
-		SetColor(source.x + randX, source.y + randY); 
+		Point temp = Point(source.x + randX, source.y + randY);
+
+		SetColor(temp, alpha); 
+
 		glVertex2d(target.x + randX, target.y + randY);
 
 
 
 		glEnd();
-
 	}
 
 }

@@ -208,6 +208,17 @@ void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v)
 	whoami(o)->m_brushDialog->show();
 }
 
+//-------------------------------------------------------------
+// Gaussian Blurs
+// This is called by the UI when the gaussian blur menu item
+// is chosen. It will blur the original image.
+//-------------------------------------------------------------
+void ImpressionistUI::cb_load_blurred_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+	pDoc->loadImageBlurred("test");
+}
+
 //------------------------------------------------------------
 // Clears the paintview canvas.
 // Called by the UI when the clear canvas menu item is chosen
@@ -298,6 +309,16 @@ void ImpressionistUI::cb_thicknessSlides(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_angleSlides(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_nAngle = int(((Fl_Slider *)o)->value());
+}
+
+//-----------------------------------------------------------
+// Updates the brush alpha to use from the value of the alpha
+// slider
+// Called by the UI when the alpha slider is moved
+//-----------------------------------------------------------
+void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nAlpha = float(((Fl_Slider *)o)->value());
 }
 
 
@@ -402,12 +423,33 @@ void ImpressionistUI::setAngle(int angle)
 		//m_BrushAngleSlider->value(m_nAngle);
 }
 
+//------------------------------------------------
+// Return the brush alpha
+//------------------------------------------------
+float ImpressionistUI::getAlpha()
+{
+	return m_nAlpha;
+}
+
+//-------------------------------------------------
+// Set the brush alpha
+//-------------------------------------------------
+void ImpressionistUI::setAlpha(float alpha)
+{
+	m_nAlpha = alpha;
+
+	//if (m_nAngle <= 40)
+	//m_BrushAngleSlider->value(m_nAngle);
+}
+
+
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 		{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
+		{ "&Gaussian Blurring...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_load_blurred_image },  //GAUS BLUR
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
@@ -464,11 +506,13 @@ ImpressionistUI::ImpressionistUI() {
 
 	// init values
 
-	m_nSize = 10;
+	m_nSize = 4;
 
-	m_nThickness = 5;
+	m_nThickness = 1;
 
 	m_nAngle = 0;
+
+	m_nAlpha = 1.00f;
 
 
 
@@ -499,7 +543,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->callback(cb_sizeSlides);
 
 		// Add brush thickness slider to the dialog 
-		m_BrushThicknessSlider = new Fl_Value_Slider(10, 105, 300, 20, "Line Thickness");
+		m_BrushThicknessSlider = new Fl_Value_Slider(10, 105, 300, 20, "Line Width");
 		m_BrushThicknessSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushThicknessSlider->type(FL_HOR_NICE_SLIDER);
 		m_BrushThicknessSlider->labelfont(FL_COURIER);
@@ -518,11 +562,25 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushAngleSlider->labelfont(FL_COURIER);
 		m_BrushAngleSlider->labelsize(12);
 		m_BrushAngleSlider->minimum(0);
-		m_BrushAngleSlider->maximum(360);
+		m_BrushAngleSlider->maximum(359);
 		m_BrushAngleSlider->step(1);
 		m_BrushAngleSlider->value(m_nAngle);
 		m_BrushAngleSlider->align(FL_ALIGN_RIGHT);
 		m_BrushAngleSlider->callback(cb_angleSlides);
+
+		// Add brush alpha slider to the dialog 
+		m_BrushAngleSlider = new Fl_Value_Slider(10, 155, 300, 20, "Alpha");
+		m_BrushAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_BrushAngleSlider->type(FL_HOR_NICE_SLIDER);
+		m_BrushAngleSlider->labelfont(FL_COURIER);
+		m_BrushAngleSlider->labelsize(12);
+		m_BrushAngleSlider->minimum(0.0);
+		m_BrushAngleSlider->maximum(1.0);
+		m_BrushAngleSlider->step(0.01);
+		m_BrushAngleSlider->value(m_nAlpha);
+		m_BrushAngleSlider->align(FL_ALIGN_RIGHT);
+		m_BrushAngleSlider->callback(cb_alphaSlides);
+
 
     m_brushDialog->end();	
 

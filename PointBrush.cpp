@@ -23,6 +23,10 @@ void PointBrush::BrushBegin( const Point source, const Point target )
 
 	int size = pDoc->getSize();
 
+	//Enable blending for setting the alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
 
 	glPointSize( (float)size );
@@ -35,13 +39,16 @@ void PointBrush::BrushMove( const Point source, const Point target )
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg=pDoc->m_pUI;
 
+
 	if ( pDoc == NULL ) {
 		printf( "PointBrush::BrushMove  document is NULL\n" );
 		return;
 	}
 
+	float alpha = pDoc->getAlpha();
+
 	glBegin( GL_POINTS );
-		SetColor( source );
+		SetColor( source, alpha );
 
 		glVertex2d( target.x, target.y );
 

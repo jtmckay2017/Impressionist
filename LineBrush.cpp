@@ -24,7 +24,9 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 
 	int size = pDoc->getSize();
 
-
+	//Enable blending for setting the alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//glLineWidth((float)size); //add slider for line width
 
@@ -49,11 +51,16 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	//Set line width
 	glLineWidth(thickness);
 
+	float alpha = pDoc->getAlpha();
+
 	//--------------------
 	//Begin drawing lines
 	//--------------------
 	glBegin(GL_LINES);
-		SetColor(source);
+
+		Point temp = Point(source.x, source.y);
+
+		SetColor(temp, alpha);
 
 		glVertex2d(target.x, target.y);
 		glVertex2d(target.x+cos(angleRadians)*size, target.y+sin(angleRadians)*size); //Affected by size slider

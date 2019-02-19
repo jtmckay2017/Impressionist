@@ -46,11 +46,16 @@ public:
 
 	// according to the source image and the position, determine the draw color
 	void SetColor( const Point source );
+
+	// according to the source image and the position, determine the draw color with alpha
+	void SetColor(const Point source, float alpha);
+
 	// abstracted function for SetColor using x and y coords
 	void SetColor( int x, int y );
 
 	// get Doc to communicate with it
 	ImpressionistDoc* GetDocument( void );
+
 
 	// Return the name of the brush (not used in this version).
 	char* BrushName( void );

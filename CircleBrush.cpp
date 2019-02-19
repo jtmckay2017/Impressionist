@@ -8,6 +8,7 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "circlebrush.h"
+#include <math.h>
 
 extern float frand();
 
@@ -23,7 +24,9 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 
 	int size = pDoc->getSize();
 
-
+	//Enable blending for setting the alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//glLineWidth((float)size); //add slider for line width
 
@@ -40,16 +43,29 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
-	int size = pDoc->getSize();
+
+	int radius = pDoc->getSize();
+
+	const int sides = 20;
+
+	float alpha = pDoc->getAlpha();
+
 
 	//--------------------
-	//Begin drawing lines
+	//Begin drawing circles
 	//--------------------
-	glBegin(GL_LINES);
-	SetColor(source);
+	glBegin(GL_LINE_LOOP);
+	SetColor(source, alpha);
 
-	glVertex2d(target.x, target.y);
-	glVertex2d(target.x + size, target.y + size); //Affected by size slider
+	for (double r = 0; r < radius; r+=0.5)
+	{
+		for (int a = 0; a < 360; a += 360 / sides)
+		{
+			double heading = a * M_PI / 180;
+			glVertex2d((cos(heading) * (radius-r)) + target.x, (sin(heading) * (radius-r)) + target.y);
+		}
+	}
+
 	glEnd();
 }
 

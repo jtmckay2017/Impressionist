@@ -21,6 +21,8 @@ public:
 
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		saveImage(char *iname);			// called by the UI to save image
+	int		loadImageBlurred(char *iname);  // called by the UI to blur and load an image
+	int		loadImageWithArray(unsigned char *blurredImg); // called by loadImageBlurred to refresh images
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -31,6 +33,8 @@ public:
 	void	setThickness(int size);			// set the UI thickness
 	int		getAngle();						// get the UI angle
 	void	setAngle(int size);				// set the UI angle
+	float	getAlpha();						// get the UI alpha
+	void	setAlpha(float size);			// set the UI alpha
 	char*	getImageName();					// get the current image name
 	
 

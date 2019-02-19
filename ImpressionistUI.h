@@ -40,6 +40,8 @@ public:
 	Fl_Slider*			m_BrushSizeSlider;
 	Fl_Slider*			m_BrushThicknessSlider;
 	Fl_Slider*			m_BrushAngleSlider;
+	Fl_Slider*			m_BrushAlphaSlider;
+
 	Fl_Button*          m_ClearCanvasButton;
 
 	// Member functions
@@ -60,6 +62,9 @@ public:
 	int					getAngle();
 	void				setAngle(int angle);
 
+	float				getAlpha();
+	void				setAlpha(float angle);
+
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
 
@@ -67,6 +72,7 @@ private:
 	int		m_nSize;
 	int		m_nThickness;
 	int		m_nAngle;
+	float	m_nAlpha;
 
 
 	// Static class members
@@ -79,6 +85,7 @@ private:
 	// static
 	static void	cb_load_image(Fl_Menu_* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
+	static void cb_load_blurred_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
 	static void	cb_clear_canvas(Fl_Menu_* o, void* v);
 	static void	cb_exit(Fl_Menu_* o, void* v);
@@ -88,6 +95,8 @@ private:
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
 	static void	cb_thicknessSlides(Fl_Widget* o, void* v);
 	static void	cb_angleSlides(Fl_Widget* o, void* v);
+	static void	cb_alphaSlides(Fl_Widget* o, void* v);
+
 
 
 

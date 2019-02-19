@@ -106,7 +106,13 @@ int ImpressionistDoc::getAngle()
 	return m_pUI->getAngle();
 }
 
-
+//---------------------------------------------------------
+// Return the alpha of the brush
+//---------------------------------------------------------
+float ImpressionistDoc::getAlpha()
+{
+	return m_pUI->getAlpha();
+}
 
 //---------------------------------------------------------
 // Load the specified image
@@ -155,10 +161,104 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->resizeWindow(width, height);	
 	m_pUI->m_paintView->refresh();
 
+	unsigned char* temp = m_ucPainting;
 
 	return 1;
 }
 
+
+//---------------------------------------------------------
+// Load the specified image
+// This is called by the UI when the load image button is 
+// pressed.
+//---------------------------------------------------------
+int ImpressionistDoc::loadImageWithArray(unsigned char *blurredImg)
+{
+
+
+	// release old storage
+	if (m_ucBitmap) delete[] m_ucBitmap;
+	if (m_ucPainting) delete[] m_ucPainting;
+
+	m_ucBitmap = blurredImg;
+
+
+
+	// allocate space for draw view
+	m_ucPainting = new unsigned char[m_nWidth*m_nHeight * 3];
+	memset(m_ucPainting, 0, m_nWidth*m_nHeight * 3);
+
+	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+		m_pUI->m_mainWindow->y(),
+		m_nWidth * 2,
+		m_nHeight + 25);
+
+	// display it on origView
+	m_pUI->m_origView->resizeWindow(m_nWidth, m_nHeight);
+	m_pUI->m_origView->refresh();
+
+	// refresh paint view as well
+	m_pUI->m_paintView->resizeWindow(m_nWidth, m_nHeight);
+	m_pUI->m_paintView->refresh();
+
+	return 1;
+}
+
+//----------------------------------------------------------------
+// Load a GBlurred image.
+// Take original bitmap image and send
+// it to program blurred.
+//---------------------------------------------------------------
+int ImpressionistDoc::loadImageBlurred(char *iname)
+{
+	//setup kernal
+	const int kHeight = 5;
+	const int kWidth = 5;
+	unsigned char kernal[kHeight][kWidth] = {	
+												{ 1, 4, 7, 4, 1 }, 
+												{ 4, 16, 26, 16, 4 }, 
+												{ 7, 26, 41, 26, 7 },
+												{ 4, 16, 26, 16, 4 },
+												{ 1, 4, 7, 4, 1 }				
+											};
+
+
+	// allocate space for new blurred image view
+	unsigned char* m_ucBlurredBitmap = new unsigned char[m_nWidth*m_nHeight * 3];
+	memset(m_ucBlurredBitmap, 0, m_nWidth*m_nHeight * 3);
+
+	printf("load a blurred image: %s", iname);
+
+	int currentLoad = 0;
+	int divideBy = 273;
+
+	unsigned char* temp = m_ucBitmap;
+
+
+	for (int d = 0; d < 3; d++) //Loop through three times for each color value
+	{
+		for (int i = 0; i < m_nWidth; i++) //go through x values
+		{
+			for (int j = 0; j < m_nHeight; j++)  //go through y values
+			{
+				for (int w = i; w < i + kWidth; w++) //loop through kernal height
+				{
+					for (int h = j; h < j + kHeight; h++) //loop through kernal width
+					{
+						currentLoad += (GetOriginalPixel(w-2, h-2)[d] * kernal[h-j][w-i]); //Do computation with kernal then add to payload
+					}
+				}
+				
+				*((m_ucBlurredBitmap + 3 * (j*m_nWidth + i)) + d) = (currentLoad / divideBy); //Calculate center pixel and set it
+
+				currentLoad = 0;  //Reset payload
+			}
+		}
+	}
+	
+	loadImageWithArray(m_ucBlurredBitmap);
+	return 1;
+}
 
 //----------------------------------------------------------------
 // Save the specified image
