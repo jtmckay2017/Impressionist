@@ -117,13 +117,15 @@ void PaintView::draw()
 			RestoreContent();
 			break;
 		case RIGHT_MOUSE_DOWN:
-
+			m_pDoc->LineBegin( target );
 			break;
 		case RIGHT_MOUSE_DRAG:
-
+			RestoreContent();
+			m_pDoc->LineMove( target );
 			break;
 		case RIGHT_MOUSE_UP:
-
+			RestoreContent();
+			m_pDoc->LineEnd( target );
 			break;
 
 		default:

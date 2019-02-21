@@ -322,7 +322,20 @@ void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
 }
 
 
+//-----------------------------------------------------------
+// Updates the way the angle is calculated for line brushes
+// 
+// Called by the UI when the alpha choice is changed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_angleChoice(Fl_Widget* o, void* v)
+{
+	ImpressionistUI* pUI = ((ImpressionistUI *)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
 
+	int type = (int)v;
+	printf("called");
+	printf("%d", (int)v);
+}
 
 
 
@@ -399,9 +412,6 @@ int ImpressionistUI::getThickness()
 void ImpressionistUI::setThickness(int thickness)
 {
 	m_nThickness = thickness;
-
-	//if (thickness <= 40)
-		//m_BrushThicknessSlider->value(m_nThickness);
 }
 
 //------------------------------------------------
@@ -418,9 +428,7 @@ int ImpressionistUI::getAngle()
 void ImpressionistUI::setAngle(int angle)
 {
 	m_nAngle = angle;
-
-	//if (m_nAngle <= 40)
-		//m_BrushAngleSlider->value(m_nAngle);
+	m_BrushAngleSlider->value(m_nAngle);
 }
 
 //------------------------------------------------
@@ -441,6 +449,8 @@ void ImpressionistUI::setAlpha(float alpha)
 	//if (m_nAngle <= 40)
 	//m_BrushAngleSlider->value(m_nAngle);
 }
+
+
 
 
 // Main menu definition
@@ -473,7 +483,13 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
   {0}
 };
 
-
+// Angle choice menu definition
+Fl_Menu_Item ImpressionistUI::lineAngleMenu[3 + 1] = {
+	{ "Slider/Right Mouse",FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_angleChoice, (void *)1 },
+	{ "Gradiant",FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_angleChoice, (void *)2 },
+	{ "Brush Direction",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_angleChoice, (void *)3 },
+	{ 0 }
+};
 
 //----------------------------------------------------
 // Constructor.  Creates all of the widgets.
@@ -517,7 +533,7 @@ ImpressionistUI::ImpressionistUI() {
 
 
 	// brush dialog definition
-	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
+	m_brushDialog = new Fl_Window(400, 200, "Brush Dialog");
 		// Add a brush type choice to the dialog
 		m_BrushTypeChoice = new Fl_Choice(50,10,150,25,"&Brush");
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
@@ -543,7 +559,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->callback(cb_sizeSlides);
 
 		// Add brush thickness slider to the dialog 
-		m_BrushThicknessSlider = new Fl_Value_Slider(10, 105, 300, 20, "Line Width");
+		m_BrushThicknessSlider = new Fl_Value_Slider(10, 110, 300, 20, "Line Width");
 		m_BrushThicknessSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushThicknessSlider->type(FL_HOR_NICE_SLIDER);
 		m_BrushThicknessSlider->labelfont(FL_COURIER);
@@ -554,9 +570,10 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushThicknessSlider->value(m_nThickness);
 		m_BrushThicknessSlider->align(FL_ALIGN_RIGHT);
 		m_BrushThicknessSlider->callback(cb_thicknessSlides);
+		m_BrushThicknessSlider->deactivate();
 
 		// Add brush angle slider to the dialog 
-		m_BrushAngleSlider = new Fl_Value_Slider(10, 130, 300, 20, "Line Angle");
+		m_BrushAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
 		m_BrushAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushAngleSlider->type(FL_HOR_NICE_SLIDER);
 		m_BrushAngleSlider->labelfont(FL_COURIER);
@@ -567,21 +584,48 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushAngleSlider->value(m_nAngle);
 		m_BrushAngleSlider->align(FL_ALIGN_RIGHT);
 		m_BrushAngleSlider->callback(cb_angleSlides);
+		m_BrushAngleSlider->deactivate();
 
 		// Add brush alpha slider to the dialog 
-		m_BrushAngleSlider = new Fl_Value_Slider(10, 155, 300, 20, "Alpha");
-		m_BrushAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
-		m_BrushAngleSlider->type(FL_HOR_NICE_SLIDER);
-		m_BrushAngleSlider->labelfont(FL_COURIER);
-		m_BrushAngleSlider->labelsize(12);
-		m_BrushAngleSlider->minimum(0.0);
-		m_BrushAngleSlider->maximum(1.0);
-		m_BrushAngleSlider->step(0.01);
-		m_BrushAngleSlider->value(m_nAlpha);
-		m_BrushAngleSlider->align(FL_ALIGN_RIGHT);
-		m_BrushAngleSlider->callback(cb_alphaSlides);
+		m_BrushAlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
+		m_BrushAlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_BrushAlphaSlider->type(FL_HOR_NICE_SLIDER);
+		m_BrushAlphaSlider->labelfont(FL_COURIER);
+		m_BrushAlphaSlider->labelsize(12);
+		m_BrushAlphaSlider->minimum(0.0);
+		m_BrushAlphaSlider->maximum(1.0);
+		m_BrushAlphaSlider->step(0.01);
+		m_BrushAlphaSlider->value(m_nAlpha);
+		m_BrushAlphaSlider->align(FL_ALIGN_RIGHT);
+		m_BrushAlphaSlider->callback(cb_alphaSlides);
+
+		// Add the angle calculation selection to the dialog
+		m_lineAngleChoice = new Fl_Choice(115, 45, 150, 20, "&Stroke Direction");
+		m_lineAngleChoice->user_data((void*)(this));	 // record self to be used by static callback functions
+
+		m_lineAngleChoice->menu(lineAngleMenu);
+		m_lineAngleChoice->callback(cb_angleChoice);
+
 
 
     m_brushDialog->end();	
 
+}
+
+//-------------------------------------------------
+// Disable line settings
+//-------------------------------------------------
+void ImpressionistUI::disableLineSettings()
+{
+	m_BrushThicknessSlider->deactivate();
+	m_BrushAngleSlider->deactivate();
+}
+
+//-------------------------------------------------
+// Enable line settings
+//-------------------------------------------------
+void ImpressionistUI::enableLineSettings()
+{
+	m_BrushThicknessSlider->activate();
+	m_BrushAngleSlider->activate();
 }

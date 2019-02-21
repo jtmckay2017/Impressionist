@@ -36,6 +36,11 @@ public:
 	float	getAlpha();						// get the UI alpha
 	void	setAlpha(float size);			// set the UI alpha
 	char*	getImageName();					// get the current image name
+
+	//Get angle from line functions
+	void	LineBegin(const Point target);
+	void	LineMove(const Point target);
+	void	LineEnd(const Point target);
 	
 
 // Attributes
@@ -68,6 +73,8 @@ public:
 
 private:
 	char			m_imageName[256];
+	Point			angleLineStart;
+	Point			angleLineEnd;
 
 };
 

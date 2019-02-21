@@ -6,6 +6,8 @@
 //
 
 #include <FL/fl_ask.H>
+#include <math.h>
+#include <cmath>
 
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
@@ -53,7 +55,6 @@ ImpressionistDoc::ImpressionistDoc()
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
-
 }
 
 
@@ -80,6 +81,15 @@ char* ImpressionistDoc::getImageName()
 void ImpressionistDoc::setBrushType(int type)
 {
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[type];
+
+	// Lets disable or enable settings based on brush
+	if (m_pCurrentBrush == ImpBrush::c_pBrushes[1] || m_pCurrentBrush == ImpBrush::c_pBrushes[4])
+	{
+		m_pUI->enableLineSettings();
+	}
+	else {
+		m_pUI->disableLineSettings();
+	}	
 }
 
 //---------------------------------------------------------
@@ -96,6 +106,14 @@ int ImpressionistDoc::getSize()
 int ImpressionistDoc::getThickness()
 {
 	return m_pUI->getThickness();
+}
+
+//---------------------------------------------------------
+// Set the angle of the brush.
+//---------------------------------------------------------
+void ImpressionistDoc::setAngle(int angle)
+{
+	m_pUI->setAngle(angle);
 }
 
 //---------------------------------------------------------
@@ -205,7 +223,7 @@ int ImpressionistDoc::loadImageWithArray(unsigned char *blurredImg)
 }
 
 //----------------------------------------------------------------
-// Load a GBlurred image.
+// Load a Blurred image.
 // Take original bitmap image and send
 // it to program blurred.
 //---------------------------------------------------------------
@@ -323,3 +341,40 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 	return GetOriginalPixel( p.x, p.y );
 }
 
+//-----------------------------------------------------------------
+// Handle changing the line angle.  Get start and end point
+// then do the calculations.
+//-----------------------------------------------------------------
+void ImpressionistDoc::LineBegin(const Point target)
+{
+	glLineWidth(1.0);
+	angleLineStart = target;
+	LineMove(target);
+}
+
+
+void ImpressionistDoc::LineMove(const Point target)
+{
+
+	glBegin(GL_LINES);
+	glColor3f(255, 0, 0);
+	glVertex2d(target.x, target.y);
+	glVertex2d(angleLineStart.x, angleLineStart.y);
+	glEnd();
+	glFlush();
+	LineEnd(target);
+}
+
+void ImpressionistDoc::LineEnd(const Point target)
+{
+	angleLineEnd = target;
+
+	// Calculate angle and set it.
+	double angle = atan2(angleLineStart.y - angleLineEnd.y, angleLineEnd.x - angleLineStart.x) * 180 / M_PI;
+	if (angle < 0) {
+		angle += 360;
+	}
+	angle -= 360;
+	angle = abs(angle);
+	setAngle(angle);
+}

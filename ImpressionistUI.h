@@ -36,11 +36,14 @@ public:
 // for brush dialog
 	Fl_Window*			m_brushDialog;
 	Fl_Choice*			m_BrushTypeChoice;
+	Fl_Choice *			m_lineAngleChoice;
 
 	Fl_Slider*			m_BrushSizeSlider;
 	Fl_Slider*			m_BrushThicknessSlider;
 	Fl_Slider*			m_BrushAngleSlider;
 	Fl_Slider*			m_BrushAlphaSlider;
+
+
 
 	Fl_Button*          m_ClearCanvasButton;
 
@@ -48,8 +51,14 @@ public:
 	void				setDocument(ImpressionistDoc* doc);
 	ImpressionistDoc*	getDocument();
 
+	// All setting enablers/disablers
+	void enableLineSettings();
+	void disableLineSettings();
+
 	void				show();
 	void				resize_windows(int w, int h);
+
+
 
 	// Interface to get attribute
 
@@ -78,6 +87,7 @@ private:
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
 	static Fl_Menu_Item		brushTypeMenu[NUM_BRUSH_TYPE+1];
+	static Fl_Menu_Item		lineAngleMenu[4];
 
 	static ImpressionistUI*	whoami(Fl_Menu_* o);
 
@@ -96,6 +106,7 @@ private:
 	static void	cb_thicknessSlides(Fl_Widget* o, void* v);
 	static void	cb_angleSlides(Fl_Widget* o, void* v);
 	static void	cb_alphaSlides(Fl_Widget* o, void* v);
+	static void	cb_angleChoice(Fl_Widget* o, void* v);
 
 
 

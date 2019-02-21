@@ -46,7 +46,7 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 
 	int radius = pDoc->getSize();
 
-	const int sides = 20;
+	const int sides = 100;
 
 	float alpha = pDoc->getAlpha();
 
